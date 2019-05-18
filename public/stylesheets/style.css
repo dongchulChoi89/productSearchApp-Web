@@ -1,0 +1,41 @@
+@media (max-width: 576px) {
+  html{
+    font-size: 0.55em;
+  }
+  .material-icons{
+    font-size: 0.7em;
+  }
+
+  #faceIcon{
+    width: 22px;
+  }
+}
+
+
+.nav-link{
+  color:black;
+  background-color: white;
+}
+.nav-pills .nav-link.active,.show>.nav-pills .nav-link{
+  color:white;
+  background-color:#343a40;
+}
+.pagination .page-item a:hover{
+  color: white;
+  background-color:#343a40;
+}
+
+.slide-effect {
+  transition: all ease 10s;
+  position: relative;
+
+  left: 0;
+}
+.ng-hide {
+  height: 0;
+  width: 0;
+  background-color: transparent;
+  color: white;
+  left: 2000px;
+}
+

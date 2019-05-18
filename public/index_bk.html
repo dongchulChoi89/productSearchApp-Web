@@ -1,0 +1,590 @@
+<!--
+    Dongchul Choi(7806678422)
+    ClassID: 27295wfCQ
+     ClaasPage: http://www-scf.usc.edu/~dongchul/C1h2O3i4D5c6.html
+    AWSPage: http://dongchulchoi.us-east-2.elasticbeanstalk.com/
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Product Search</title>
+    <!-- Basic Configuration -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Material Icon -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
+    <!-- Custom stylesheet -->
+    <link rel="stylesheet" href="stylesheets/style.css">
+</head>
+
+<body ng-app="searchApp" ng-controller="searchCtrl">
+
+    <div class="container bg-dark text-white" >
+                <div class="row d-flex justify-content-center mb-3 pt-3">
+                    <h3>Product Search</h3>
+                </div>
+                <form name="requestForm" role="form" class="form" ng-submit="requestForm.keywords.$valid?requestEbay():''">
+                <div class="row form-group d-flex justify-content-center mb-0">
+                    <div class="col-sm-2 p-0 d-flex align-items-center">
+                        <label for="keywords" class="m-0">Keywords</label><span class="text-danger" class="m-0">*</span>
+                    </div>
+                    <div class="col-sm-5 p-0">
+                        <input type="text" ng-model="searchForm.keywords" class="form-control" id="keywords" name="keywords" placeholder="Enter Product Name(eg. iPhone 8)" ng-required="true" ng-pattern="/^[a-zA-Z0-9 ]+$/" ng-style="requestForm.keywords.$touched && requestForm.keywords.$invalid && {'border':'solid red 1px'}">
+
+                    </div>
+                </div>
+                <div class="row form-group d-flex justify-content-center mt-0 p-0">
+                    <div class="col-sm-2 m-0 p-0 d-flex align-items-center">
+                    </div>
+                    <div class="col-sm-5 m-0 p-0">
+                        <div ng-show="requestForm.keywords.$touched && requestForm.keywords.$invalid" class="text-danger" >
+                                Please enter a Keyword.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group d-flex justify-content-center">
+                    <div class="col-sm-2 p-0 d-flex align-items-center">
+                        <lable for="category" class="m-0">Category</lable>
+                    </div>
+                    <div class="col-sm-5 p-0 d-flex align-items-center">
+                        <select name="category" ng-model="searchForm.category" id="category" class="form-control">
+                            <option value="">ALL Categories</option>
+                            <option value="550">Art</option>
+                            <option value="2984">Baby</option>
+                            <option value="267">Books</option>
+                            <option value="11450">Clothing, Shoes & Accessories</option>
+                            <option value="58058">Computers/Tablets & Networking</option>
+                            <option value="26395">Health & Beauty</option>
+                            <option value="11233">Music</option>
+                            <option value="1249">Video Games & Consoles</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group d-flex justify-content-center">
+                    <div class="col-sm-2 p-0 d-flex align-items-center">
+                        <label for="condition1" class="m-0">Condition</label>
+                    </div>
+                    <div class="col-sm-5 p-0 d-flex align-items-center">
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" ng-model="searchForm.new" class="form-check-input" id="condition1">New
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" ng-model="searchForm.used" class="form-check-input">Used
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" ng-model="searchForm.unspecified" class="form-check-input">Unspecified
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group d-flex justify-content-center">
+                    <div class="col-sm-2 p-0 d-flex align-items-center">
+                        <label for="shipping" class="m-0">Shipping Options</label>
+                    </div>
+                    <div class="col-sm-5 p-0 d-flex align-items-center">
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" ng-model="searchForm.localPickupOnly" class="form-check-input" id="shipping">Local Pickup
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" ng-model="searchForm.freeShippingOnly" class="form-check-input">Free Shipping
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group d-flex justify-content-center">
+                    <div class="col-sm-2 p-0 d-flex align-items-center">
+                        <label for="miles" class="m-0">Distance (Miles)</label>
+                    </div>
+                    <div class="col-sm-5 p-0 d-flex align-items-center"><input type="text" ng-model="searchForm.miles" class="form-control" id="miles" placeholder="10"></div>
+                </div>
+                <div class="row form-group d-flex justify-content-center mb-0">
+                    <div class="col-sm-2 p-0 d-flex align-items-start">
+                        <label for="from" class="m-0">From</label><span class="text-danger" class="m-0">*</span>
+                    </div>
+                    <div class="col-sm-5 p-0">
+                        <div class="form-check p-0">
+                            <label class="form-check-label">
+                                <input type="radio" ng-model="searchForm.from" id="from" value="current" ng-click="requestForm.otherZip.$touched=false;otherClicked=true;searchForm.otherZip='';"> Current Location
+                            </label>
+                        </div>
+                        <div class="form-check p-0">
+                            <label class="form-check-label">
+                                <input type="radio" ng-model="searchForm.from" value="other" ng-init="otherClicked=true" ng-click="otherClicked=false;"> Other. Please specify zip code:
+                            </label>
+                        </div>
+                        <div class="form-check p-0 mt-2">
+                                <md-autocomplete
+                                        md-input-class="form-control"
+                                        md-clear-button="false"
+                                        md-input-name="otherZip"
+                                        md-selected-item="searchForm.otherZip"
+                                        md-search-text="searchText"
+                                        md-items="item in query(searchText)"
+                                        md-item-text="item"
+                                        md-dropdown-position="bottom"
+                                        ng-disabled="otherClicked"
+                                        ng-required="true"
+                                        ng-style="requestForm.otherZip.$touched && requestForm.otherZip.$invalid && {'border':'solid red 1px'}"
+                                        placeholder="Enter zip"
+                                    >
+                                    <md-item-template>
+                                        <span md-highlight-text="searchText">{{item}}</span>
+                                    </md-item-template>
+                                    <md-not-found>
+                                        No corresponding zip
+                                    </md-not-found>
+                                </md-autocomplete>
+                        </div>
+                    </div>
+                </div>
+                    <div class="row form-group d-flex justify-content-center mt-0 p-0">
+                        <div class="col-sm-2 m-0 p-0 d-flex align-items-center">
+                        </div>
+                        <div class="col-sm-5 m-0 p-0">
+                            <div ng-show="requestForm.otherZip.$touched && requestForm.otherZip.$invalid" class="text-danger" >
+                                Please enter a zip code.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group d-flex justify-content-center mt-0 p-0">
+                        <div class="col-sm-2 m-0 p-0 d-flex align-items-center">
+                        </div>
+                        <div class="col-sm-5 m-0 p-0">
+                            <div ng-show="requestForm.otherZip2.$touched && requestForm.otherZip2.$invalid" class="text-danger" >
+                                Please enter a zip code.
+                            </div>
+                        </div>
+                    </div>
+                <div class="row pb-3 d-flex justify-content-center">
+                    <div class="col-sm-2 p-0 d-inline-flex" >
+                        <button type="submit" class="btn btn-light d-flex align-items-center mr-3 p-0 p-sm-1"><i class="material-icons">search</i><span>Search</span></button>
+                        <button type="button" ng-click="resetForm();requestForm.keywords.$touched=false;requestForm.otherZip.$touched=false;" class="btn btn-light d-flex align-items-center p-0 p-sm-1"><i class="material-icons">clear_all</i>Clear</button>
+                    </div>
+                    <div class="col-sm-5">
+
+                    </div>
+                </div>
+                </form>
+
+    </div>
+    <div class="container-fluid d-flex justify-content-center mt-3" ng-cloak>
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="pill" href="#results" ng-click="viewSearch()" id="resultsTab">Results</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="pill" href="#wishLists" ng-click="viewWish()">Wish List</a>
+            </li>
+        </ul>
+    </div>
+    <div class="container">
+        <div class="progress mt-3" ng-if="progressBar" ng-cloak>
+            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:50%"></div>
+        </div>
+    </div>
+    <div class="container" ng-cloak>
+        <button type="button" ng-if="noRecords && !progressBar" class="btn btn-warning btn-block text-light mt-3">No Records.</button>
+        <button type="button" ng-if="errors && !progressBar" class="btn btn-danger btn-block text-light mt-3">Errors.</button>
+    </div>
+    <div class="container p-0" ng-if="mainView" ng-cloak>
+        <div class="container d-flex justify-content-end">
+            <button type="button" class="btn btn-light mr-3" ng-show="searchView && firstClickList && !progressBar" ng-click="viewDetail();">Details></button>
+        </div>
+
+        <div class="tab-content container p-0 slide_effect">
+
+            <div class="tab-pane active" id="results"> <!-- ** -->
+                <div class="container d-flex justify-content-start justify-content-sm-center mt-3 p-0" ng-show="searchView && !noRecords && !errors && !progressBar">
+                    <table class="table table-dark table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Price</th>
+                            <th>Shipping</th>
+                            <th>Zip</th>
+                            <th>Seller</th>
+                            <th>Wish List</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in searchList | limitTo:10:pagIndex">
+                            <td>{{item.index}}</td>
+                            <td><img ng-src="{{item.image}}" class="img-fluid" width="100vw" alt="N/A"></td>
+                            <td data-toggle="tooltip" title="{{item.title}}" ng-click="requestEbayDetail(item.id,item.title,item.shippingInfo,item.returnAccepted,item.sellerInfo,item.storeInfo);">{{item.title|limitTo:35}}{{item.title.length>35?"...":""}}</td>
+                            <td>{{item.price}}</td>
+                            <td>{{item.shipping}}</td>
+                            <td>{{item.zip}}</td>
+                            <td>{{item.seller}}</td>
+                            <td>
+                                <button type="button" class="btn btn-light d-flex align-items-center" ng-cloak ng-if="!item.wish" ng-click="addWishList(item.index)"><i class="material-icons">add_shopping_cart</i></button>
+                                <button type="button" class="btn btn-light d-flex align-items-center text-warning" ng-cloak ng-if="item.wish" ng-click="deleteWishList(item.index)"><i class="material-icons">remove_shopping_cart</i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="container d-flex justify-content-center" ng-show="searchView && !noRecords && !errors && !progressBar">
+                    <div class="container">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item"><a class="page-link" data-toggle="pagination" ng-click="pagIndex!=0?pagIndex=pagIndex-10:pagIndex=0" ng-show="searchList[0]['count']>0" ng-init="previous=false"><< Previous</a></li>
+                            <li class="page-item"><a class="page-link" data-toggle="pagination" ng-click="pagIndex=0;" ng-show="searchList[0]['count']>0">1</a></li>
+                            <li class="page-item"><a class="page-link" data-toggle="pagination" ng-click="pagIndex=10;" ng-show="searchList[0]['count']>10">2</a></li>
+                            <li class="page-item"><a class="page-link" data-toggle="pagination" ng-click="pagIndex=20;" ng-show="searchList[0]['count']>20">3</a></li>
+                            <li class="page-item"><a class="page-link" data-toggle="pagination" ng-click="pagIndex=30;" ng-show="searchList[0]['count']>30">4</a></li>
+                            <li class="page-item"><a class="page-link" data-toggle="pagination" ng-click="pagIndex=40;next=false;" ng-show="searchList[0]['count']>40">5</a></li>
+                            <li class="page-item"><a class="page-link" data-toggle="pagination" ng-click="pagIndex!=40?pagIndex=pagIndex+10:pagIndex=40" ng-show="searchList[0]['count']>0" ng-init="next=true" ng-disabled="next">Next >></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane active" id="wishiLists">
+                <div class="container d-flex justify-content-sm-center mt-3" ng-show="wishView && !noRecords && !errors && !progressBar">
+                    <table class="table table-dark table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Price</th>
+                            <th>Shipping</th>
+                            <th>Zip</th>
+                            <th>Seller</th>
+                            <th>Wish List</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in wishList"> <!--  | orderBy:'searchIndex' -->
+                            <td>{{item.index}}</td>
+                            <td><img ng-src="{{item.image}}" class="img-fluid" width="100vw"></td>
+                            <td data-toggle="tooltip" title="{{item.title}}" ng-click="requestEbayDetail(item.id,item.title,item.shippingInfo,item.returnAccepted,item.sellerInfo,item.storeInfo)">{{item.title|limitTo:35}}{{item.title.length>35?"...":""}}</td>
+                            <td>{{item.price}}</td>
+                            <td>{{item.shipping}}</td>
+                            <td>{{item.zip}}</td>
+                            <td>{{item.seller}}</td>
+                            <td>
+                                <button type="button" class="btn btn-light d-flex align-items-center" ng-cloak ng-if="!item.wish" ng-click="addWishList(item.index)"><i class="material-icons">add_shopping_cart</i></button>
+                                <button type="button" class="btn btn-light d-flex align-items-center text-warning" ng-cloak ng-if="item.wish" ng-click="deleteWishList(item.index)"><i class="material-icons">remove_shopping_cart</i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="container mt-3" ng-show="detailView && !noRecords && !errors && !progressBar">
+            <div class="container d-flex justify-content-center" style="text-align: center">
+                <h3>{{detailBasicList[0]['listObj']['title']}}</h3>
+            </div>
+
+            <div class="container d-flex">
+                <button type="button" class="btn btn-light ml-3 mr-auto" ng-show="detailView && !progressBar" ng-click="viewSearch();" onclick="">< List</button>
+                <a ng-click="facebook()"><img class="img-fluid" id="faceIcon" ng-show="detailView && !progressBar" src="http://csci571.com/hw/hw8/Images/facebook.png" width="40px"></a>
+                <button type="button" class="btn btn-light d-flex align-items-center" ng-cloak ng-show="detailView && !progressBar" ng-if="!detailBasicList[0]['wish']" ng-click="addWishList(0)"><i class="material-icons">add_shopping_cart</i></button>
+                <button type="button" class="btn btn-light d-flex align-items-center text-warning" ng-cloak ng-show="detailView && !progressBar" ng-if="detailBasicList[0]['wish']" ng-click="deleteWishList(0)"><i class="material-icons">remove_shopping_cart</i></button>
+            </div>
+
+            <div class="d-flex justify-content-end mb-1 mt-1">
+
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="pill" href="#pills-productImages" id="productViewTab"
+                           ng-init="productView=true;photosView=false;shippingView=false;sellerView=false;similarProductsView=false" ng-click="productView=true;photosView=false;shippingView=false;sellerView=false;similarProductsView=false;requestEbayDetailTimeout()">Product</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="pill" href="#pills-photos"
+                           ng-click="productView=false;photosView=true;shippingView=false;sellerView=false;similarProductsView=false;requestGoogleCustom()">Photos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="pill" href="#pills-shipping"
+                           ng-click="productView=false;photosView=false;shippingView=true;sellerView=false;similarProductsView=false;requestEbayDetailTimeout()">Shipping</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="pill" href="#pills-seller"
+                           ng-click="productView=false;photosView=false;shippingView=false;sellerView=true;similarProductsView=false;requestEbayDetailTimeout()">Seller</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="pill" href="#pills-similar"
+                           ng-click="productView=false;photosView=false;shippingView=false;sellerView=false;similarProductsView=true;requestSimilarProducts()">Similar Products</a>
+                    </li>
+                </ul>
+
+            </div>
+
+
+            <div class="tab-content container-fluid">
+                <div class="tab-pane fade show active" id="pills-productImages">
+                    <div ng-show="productView && !noRecords && !errors && !progressBar">
+                        <table class="table table-dark table-striped table-hover">
+                            <tbody>
+                            <tr ng-if="detailBasicList[0]['productIamges']===undefined?false:true;">
+                                <td>Product Images</td>
+                                <td>
+                                    <a data-toggle="modal" data-target="#productImages" class="text-info">View Product Images Here</a>
+                                    <div class="d-flex justify-content-center">
+                                    <div class="modal" id="productImages" style="width: 100%;height: 100%" class="m-0 p-0" ng-cloak>
+                                        <div class="modal-dialog">
+                                            <div class="modal-content m-0 p-0">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Product Images</h4>
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+
+                                                    <div id="productImagesCarousel" class="carousel slide m-2" data-ride="carousel">
+                                                        <div class="carousel-inner active">
+                                                            <div class="carousel-item active p-2" style="border-style:solid;border-width:7px;border-color:black;">
+                                                                <img style="width:100%;height:100%;" ng-src="{{detailBasicList[0]['productIamges'][0]}}">
+                                                            </div>
+                                                            <div ng-if="detailBasicList[0]['productIamges'].length>1?true:false" class="carousel-item" style="border-style:solid;border-width:7px;border-color:black;" ng-repeat="element in detailBasicList[0]['productIamges'] | limitTo : detailBasicList[0]['productIamges'].length : 1">
+                                                                <img style="width:100%;height:100%;" ng-src="{{element}}">
+                                                            </div>
+                                                        </div>
+                                                        <a class="carousel-control-prev" href="#productImagesCarousel" data-slide="prev">
+                                                            <span class="carousel-control-prev-icon"></span>
+                                                        </a>
+                                                        <a class="carousel-control-next" href="#productImagesCarousel" data-slide="next">
+                                                            <span class="carousel-control-next-icon"></span>
+                                                        </a>
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-if="detailBasicList[0]['subtitle']===undefined?false:true;">
+                                <td>Subtitle</td>
+                                <td>{{detailBasicList[0]['subtitle']}}</td>
+                            </tr>
+                            <tr ng-if="detailBasicList[0]['price']===undefined?false:true;">
+                                <td>Price</td>
+                                <td>${{detailBasicList[0]['price']}}</td>
+                            </tr>
+                            <tr ng-if="detailBasicList[0]['location']===undefined?false:true;">
+                                <td>Location</td>
+                                <td>{{detailBasicList[0]['location']}}</td>
+                            </tr>
+                            <tr ng-if="detailBasicList[0]['returnPolicy']===undefined?false:true;">
+                                <td>Return Policy</td>
+                                <td>
+                                    <span ng-if="detailBasicList[0]['returnPolicy']['ReturnsAccepted']===undefined?false:true;">{{detailBasicList[0]['returnPolicy']['ReturnsAccepted']}}</span>
+                                    <span ng-if="detailBasicList[0]['returnPolicy']['ReturnsWithin']===undefined?false:true;"> Within {{detailBasicList[0]['returnPolicy']['ReturnsWithin']}}</span>
+                                </td>
+                            </tr>
+                            <tr ng-repeat="spec in detailSpecificList">
+                                <td>{{spec.name}}</td>
+                                <td>
+                                    <span ng-repeat=" element in spec.value">{{element}} </span> <!-- , 처리 -->
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="pills-photos">
+                    <div ng-show="photosView && !noRecords && !errors && !progressBar">
+                        <div ng-repeat="photo in photoList" style="border-style:solid;border-width:7px;border-color:black;display: inline-block" class="m-1 p-1">
+                            <img class="img-fluid" ng-src="{{photo['link']}}" width="300vw">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="pills-shipping">
+                    <div ng-show="shippingView">
+                        <table class="table table-dark table-striped table-hover">
+                            <tbody>
+                            <tr ng-if="shippingInfo['shippingServiceCost']===undefined?false:true;">
+                                <td>Shipping Cost</td>
+                                <td>{{shippingInfo['shippingServiceCost'][0]['__value__']==0?'Free Shipping':'$'+shippingInfo['shippingServiceCost'][0]['__value__']}}</td>
+                            </tr>
+                            <tr ng-if="shippingInfo['shipToLocations']===undefined?false:true;">
+                                <td>Shipping Locations</td>
+                                <td>{{shippingInfo['shipToLocations'][0]}}</td>
+                            </tr>
+                            <tr ng-if="shippingInfo['handlingTime']===undefined?false:true;">
+                                <td>Handling time</td>
+                                <td>{{days(shippingInfo['handlingTime'][0])}}</td>
+                            </tr>
+                            <tr ng-if="shippingInfo['expeditedShipping']===undefined?false:true;">
+                                <td>Expedited Shipping</td>
+                                <td>
+                                    <div ng-show="shippingInfo['expeditedShipping'][0]=='true'?true:false">
+                                        <i class="material-icons" style="color:green">done</i>
+                                    </div>
+                                    <div ng-show="shippingInfo['expeditedShipping'][0]=='false'?true:false">
+                                        <i class="material-icons" style="color:red">close</i>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-if="shippingInfo['oneDayShippingAvailable']===undefined?false:true;">
+                                <td>One Day Shipping</td>
+                                <td>
+                                    <div ng-show="shippingInfo['oneDayShippingAvailable'][0]=='true'?true:false">
+                                        <i class="material-icons" style="color:green">done</i>
+                                    </div>
+                                    <div ng-show="shippingInfo['oneDayShippingAvailable'][0]=='false'?true:false">
+                                        <i class="material-icons" style="color:red">close</i>
+                                    </div>
+                            </tr>
+                            <tr ng-if="returnAccepted===undefined?false:true;">
+                                <td>Return Accepted</td>
+                                <td>
+                                    <div ng-show="returnAccepted=='true'?true:false">
+                                        <i class="material-icons" style="color:green">done</i>
+                                    </div>
+                                    <div ng-show="returnAccepted=='false'?true:false">
+                                        <i class="material-icons" style="color:red">close</i>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="pills-seller">
+                    <div ng-show="sellerView && !noRecords && !errors && !progressBar">
+                        <table class="table table-dark table-striped table-hover">
+                            <tbody>
+                            <tr>
+                                <td>Feedback Score</td>
+                                <td>{{sellerInfo['feedbackScore'][0]}}</td>
+                            </tr>
+                            <tr>
+                                <td>Popularity</td>
+                                <td>
+                                    <div style="position:absolute" class="mt-1 ml-1">
+                                    {{sellerInfo['positiveFeedbackPercent'][0]}}</span>
+                                    </div>
+                                    <div style="position:relative">
+                                    <round-progress
+                                            max="100"
+                                            current="sellerInfo['positiveFeedbackPercent'][0]"
+                                            color="green"
+                                            bgcolor="black"
+                                            radius="20"
+                                            stroke="2"
+                                            semi="false"
+                                            rounded="true"
+                                            clockwise="false"
+                                            responsive="false"
+                                            duration="800"
+                                            animation="easeInOutQuart"
+                                            animation-delay="0">
+                                    </round-progress>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Feedback Rating Star</td>
+                                <td>
+                                    <i class="material-icons" style="color:{{sellerInfo['feedbackRatingStar'][0]}}">stars</i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Top Rated</td>
+                                <td>
+                                    <div ng-show="sellerInfo['topRatedSeller'][0]=='true'?true:false">
+                                        <i class="material-icons" style="color:green">done</i>
+                                    </div>
+                                    <div ng-show="sellerInfo['topRatedSeller'][0]=='false'?true:false">
+                                        <i class="material-icons" style="color:red">close</i>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-if="storeInfo['storeName']===undefined?false:true;">
+                                <td>Store Name</td>
+                                <td>{{storeInfo['storeName'][0]}}</td>
+                            </tr>
+                            <tr ng-if="storeInfo['storeURL']===undefined?false:true;">
+                                <td>Buy Product At</td>
+                                <td><a href="{{storeInfo['storeURL'][0]}}" target="_blank">Store</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="pills-similar">
+                    <div ng-show="similarProductsView && !noRecords && !errors && !progressBar">
+                        <div>
+                            <select ng-model="orderByOption1" class="bg-light mb-2">
+                                <option selected="selected" value="">Default</option>
+                                <option value="productName">Product Name</option>
+                                <option value="daysLeft">Days Left</option>
+                                <option value="price">Price</option>
+                                <option value="shippingCost">Shipping Cost</option>
+                            </select>
+
+                            <select ng-model="orderByOption2" class="bg-light mb-1">
+                                <option selected="selected" value="">Ascending</option>
+                                <option value="productName" value="reverse">Descending</option>
+                            </select>
+
+                        </div>
+                        <table class="table table-dark table-striped table-hover">
+                            <tbody>
+                            <tr ng-repeat="item in similarProductsList | orderBy : orderByOption1 : orderByOption2 | limitTo : showMoreLess">
+                                <td><img class="img-fluid" ng-src="{{item.imageURL}}" style="width: 10vw"></td>
+                                <td>
+                                <td>
+                                    <div><a class="text-info" href="{{item.viewItemURL}}" target="_blank">{{item.productName}}</a><br></div>
+                                    <div class="text-success">${{item.price}}</div>
+                                    <div class="text-warning">{{item.shippingCost==0?'Free Shipping':'$'+item.shippingCost}}</div>
+                                    <div class="text-white">Days Left: {{item.daysLeft}}</div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div ng-init="isShowed=false;needShow=true" class="d-flex justify-content-center mb-3" ng-show="needShow">
+                            <button class="btn btn-dark" ng-click="showMoreLess='all';isShowed=true;needShow=false">Show More</button>
+                        </div>
+                        <div class="d-flex justify-content-center mb-3" ng-show="isShowed">
+                            <button class="btn btn-dark" ng-click="showMoreLess='5';isShowed=false;needShow=true;">Show Less</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Angular JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-messages.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-svg-round-progressbar/0.4.8/roundProgress.min.js"></script>
+    <!-- Angular Material Library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.js"></script>
+    <!-- My Angular -->
+    <script src="javascripts/app.js"></script>
+    <script src="javascripts/controller.js"></script>
+    <!-- Facebook -->
+    <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
+</body>
+</html>
